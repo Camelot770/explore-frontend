@@ -424,7 +424,7 @@ document.querySelectorAll('.level-btn').forEach(btn => {
 
 function renderGames() {
     const list = document.getElementById('gamesList');
-    list.innerHTML = games.map(game => `
+    list.innerHTML = coupleGames.map(game => `
         <div class="game-card" onclick="showGameDetail('${game.id}')">
             <div class="game-icon">${game.icon}</div>
             <div class="game-info">
@@ -439,7 +439,7 @@ function renderGames() {
 }
 
 function showGameDetail(gameId) {
-    const game = games.find(g => g.id === gameId);
+    const game = coupleGames.find(g => g.id === gameId);
     if (!game) return;
     
     document.getElementById('gameTitle').textContent = `${game.icon} ${game.title}`;
@@ -874,7 +874,7 @@ function spinRoulette() {
                 `;
                 break;
             case 'games':
-                item = games[Math.floor(Math.random() * games.length)];
+                item = coupleGames[Math.floor(Math.random() * coupleGames.length)];
                 result.innerHTML = `
                     <h3>${item.icon} ${item.title}</h3>
                     <p>${item.description}</p>
