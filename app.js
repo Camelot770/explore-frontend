@@ -40,6 +40,12 @@ async function syncWithServer() {
             
             saveState();
             updateUI();
+            
+            // Update partner code display if modal is open
+            const codeEl = document.getElementById('myPartnerCode');
+            if (codeEl) {
+                codeEl.textContent = state.myCode || 'Ошибка';
+            }
         }
     } catch (err) {
         console.error('Sync error:', err);
@@ -715,22 +721,27 @@ document.addEventListener('DOMContentLoaded', () => {
 // === PARTNER CONNECTION ===
 
 function generatePartnerCode() {
+    // Code comes from server via syncWithServer()
+    // If no code yet, generate temporary local one
     if (!state.myCode) {
-        // Generate 6-digit code
         state.myCode = Math.random().toString(36).substring(2, 8).toUpperCase();
         saveState();
     }
-    document.getElementById('myPartnerCode').textContent = state.myCode;
+    document.getElementById('myPartnerCode').textContent = state.myCode || 'Загрузка...';
     updatePartnerStatus();
 }
 
 function showPartnerModal() {
-    document.getElementById('myPartnerCode').textContent = state.myCode;
+    document.getElementById('myPartnerCode').textContent = state.myCode || 'Загрузка...';
     updatePartnerStatus();
     showModal('partnerModal');
 }
 
 function copyPartnerCode() {
+    if (!state.myCode) {
+        if (tg) tg.showAlert('Код ещё не загружен');
+        return;
+    }
     navigator.clipboard.writeText(state.myCode).then(() => {
         if (tg) tg.showAlert('Код скопирован!');
         else alert('Код скопирован!');
@@ -738,9 +749,14 @@ function copyPartnerCode() {
 }
 
 function sharePartnerCode() {
+    if (!state.myCode) {
+        if (tg) tg.showAlert('Код ещё не загружен');
+        return;
+    }
+    const botUsername = 'Explore_body_bot';
     const text = `🔥 Присоединяйся ко мне в Explore!\n\nМой код: ${state.myCode}\n\nОткрой приложение и введи этот код для связи!`;
     if (tg) {
-        tg.openTelegramLink(`https://t.me/share/url?url=https://t.me/ExploreAppBot&text=${encodeURIComponent(text)}`);
+        tg.openTelegramLink(`https://t.me/share/url?url=https://t.me/${botUsername}&text=${encodeURIComponent(text)}`);
     } else {
         navigator.share?.({ text }) || alert(text);
     }
