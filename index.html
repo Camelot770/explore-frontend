@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Explore 🔥</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div id="app">
+        <!-- Navigation -->
+        <nav class="bottom-nav">
+            <button class="nav-btn active" data-tab="home">
+                <span class="nav-icon">🏠</span>
+                <span class="nav-label">Главная</span>
+            </button>
+            <button class="nav-btn" data-tab="ideas">
+                <span class="nav-icon">💡</span>
+                <span class="nav-label">Идеи</span>
+            </button>
+            <button class="nav-btn" data-tab="questions">
+                <span class="nav-icon">❓</span>
+                <span class="nav-label">Вопросы</span>
+            </button>
+            <button class="nav-btn" data-tab="games">
+                <span class="nav-icon">🎮</span>
+                <span class="nav-label">Игры</span>
+            </button>
+            <button class="nav-btn" data-tab="profile">
+                <span class="nav-icon">👤</span>
+                <span class="nav-label">Профиль</span>
+            </button>
+        </nav>
+
+        <!-- Home Tab -->
+        <div id="home" class="tab-content active">
+            <div class="header">
+                <h1>🔥 Explore</h1>
+                <p class="subtitle">Приложение для пар</p>
+            </div>
+            
+            <div class="streak-card">
+                <div class="streak-flame">🔥</div>
+                <div class="streak-info">
+                    <span class="streak-count" id="streakCount">0</span>
+                    <span class="streak-label">дней подряд</span>
+                </div>
+            </div>
+
+            <div class="quick-actions">
+                <h2>Быстрые действия</h2>
+                <div class="actions-grid">
+                    <button class="action-btn" onclick="showTab('ideas')">
+                        <span class="action-icon">✨</span>
+                        <span>Свайпать идеи</span>
+                    </button>
+                    <button class="action-btn" onclick="showTab('questions')">
+                        <span class="action-icon">💬</span>
+                        <span>100 вопросов</span>
+                    </button>
+                    <button class="action-btn" onclick="showRoulette()">
+                        <span class="action-icon">🎰</span>
+                        <span>Рулетка</span>
+                    </button>
+                    <button class="action-btn" onclick="showTruthOrDare()">
+                        <span class="action-icon">🎯</span>
+                        <span>Правда/Действие</span>
+                    </button>
+                    <button class="action-btn" onclick="showPlanner()">
+                        <span class="action-icon">📅</span>
+                        <span>Планировщик</span>
+                    </button>
+                    <button class="action-btn" onclick="showChallenges()">
+                        <span class="action-icon">🏆</span>
+                        <span>Челленджи</span>
+                    </button>
+                </div>
+                <div class="actions-grid" style="margin-top: 12px;">
+                    <button class="action-btn" onclick="showPositions()">
+                        <span class="action-icon">🔥</span>
+                        <span>Позы</span>
+                    </button>
+                    <button class="action-btn" onclick="showTab('games')">
+                        <span class="action-icon">🎮</span>
+                        <span>Игры</span>
+                    </button>
+                    <button class="action-btn" onclick="showLearn()">
+                        <span class="action-icon">📚</span>
+                        <span>Обучение</span>
+                    </button>
+                </div>
+                <div class="actions-grid" style="margin-top: 12px;">
+                    <button class="action-btn" onclick="showCoupons()">
+                        <span class="action-icon">🎁</span>
+                        <span>Купоны</span>
+                    </button>
+                    <button class="action-btn" onclick="showAlbum()">
+                        <span class="action-icon">📸</span>
+                        <span>Альбом</span>
+                    </button>
+                    <button class="action-btn" onclick="showPartnerModal()">
+                        <span class="action-icon">🔗</span>
+                        <span>Партнёр</span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="stats-section">
+                <h2>Статистика</h2>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <span class="stat-value" id="likedCount">0</span>
+                        <span class="stat-label">Понравилось</span>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-value" id="triedCount">0</span>
+                        <span class="stat-label">Попробовано</span>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-value" id="questionsCount">0</span>
+                        <span class="stat-label">Вопросов</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Ideas Tab (Swipe) -->
+        <div id="ideas" class="tab-content">
+            <div class="ideas-header">
+                <h2>Идеи для пар</h2>
+                <div class="category-filter">
+                    <button class="cat-btn active" data-category="all">Все</button>
+                    <button class="cat-btn" data-category="romance">💕</button>
+                    <button class="cat-btn" data-category="intimacy">🔥</button>
+                    <button class="cat-btn" data-category="positions">💑</button>
+                    <button class="cat-btn" data-category="adventure">🗺️</button>
+                    <button class="cat-btn" data-category="games">🎮</button>
+                </div>
+            </div>
+            
+            <div class="card-stack" id="cardStack">
+                <!-- Cards will be inserted here -->
+            </div>
+            
+            <div class="swipe-buttons">
+                <button class="swipe-btn dislike" onclick="swipeCard('left')">
+                    <span>👎</span>
+                </button>
+                <button class="swipe-btn super" onclick="swipeCard('up')">
+                    <span>⭐</span>
+                </button>
+                <button class="swipe-btn like" onclick="swipeCard('right')">
+                    <span>❤️</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Questions Tab -->
+        <div id="questions" class="tab-content">
+            <div class="questions-header">
+                <h2>100 вопросов</h2>
+                <p>Узнайте друг друга лучше</p>
+            </div>
+            
+            <div class="level-selector">
+                <button class="level-btn active" data-level="easy">🌱 Лёгкий</button>
+                <button class="level-btn" data-level="medium">💭 Средний</button>
+                <button class="level-btn" data-level="deep">💎 Глубокий</button>
+                <button class="level-btn" data-level="intimate">🔥 Интимный</button>
+            </div>
+            
+            <div class="question-card" id="questionCard">
+                <div class="question-level" id="questionLevel">🌱 Лёгкий</div>
+                <div class="question-text" id="questionText">Нажмите кнопку, чтобы получить вопрос</div>
+                <div class="question-category" id="questionCategory"></div>
+            </div>
+            
+            <div class="question-actions">
+                <button class="q-btn secondary" onclick="getNewQuestion()">🔄 Другой</button>
+                <button class="q-btn primary" onclick="markAnswered()">✅ Ответили</button>
+            </div>
+            
+            <div class="question-progress">
+                <span id="answeredCount">0</span> / <span id="totalQuestions">100</span> отвечено
+            </div>
+        </div>
+
+        <!-- Games Tab -->
+        <div id="games" class="tab-content">
+            <div class="games-header">
+                <h2>Игры для пар</h2>
+            </div>
+            <div class="games-list" id="gamesList">
+                <!-- Games will be inserted here -->
+            </div>
+        </div>
+
+        <!-- Profile Tab -->
+        <div id="profile" class="tab-content">
+            <div class="profile-header">
+                <div class="avatar" id="userAvatar">🔥</div>
+                <h2 id="userName">Пользователь</h2>
+                <p class="partner-status" id="partnerStatus">Нет партнёра</p>
+                <button class="partner-connect-btn" onclick="showPartnerModal()">🔗 Связать с партнёром</button>
+            </div>
+            
+            <div class="profile-stats">
+                <div class="p-stat">
+                    <span class="p-stat-value" id="pStreak">0</span>
+                    <span class="p-stat-label">🔥 Streak</span>
+                </div>
+                <div class="p-stat">
+                    <span class="p-stat-value" id="pPoints">0</span>
+                    <span class="p-stat-label">⭐ Очки</span>
+                </div>
+                <div class="p-stat">
+                    <span class="p-stat-value" id="pAchievements">0</span>
+                    <span class="p-stat-label">🏆 Награды</span>
+                </div>
+            </div>
+
+            <div class="profile-section">
+                <h3>Достижения</h3>
+                <div class="achievements-grid" id="achievementsList">
+                    <!-- Achievements will be inserted here -->
+                </div>
+            </div>
+
+            <div class="profile-section">
+                <h3>Настройки</h3>
+                <div class="settings-list">
+                    <button class="setting-btn" onclick="shareApp()">
+                        <span>📤</span> Пригласить партнёра
+                    </button>
+                    <button class="setting-btn" onclick="resetProgress()">
+                        <span>🔄</span> Сбросить прогресс
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal for Challenges -->
+        <div id="challengesModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>🏆 Челленджи</h2>
+                    <button class="close-btn" onclick="closeModal('challengesModal')">✕</button>
+                </div>
+                <div class="challenges-tabs">
+                    <button class="ch-tab active" data-duration="daily">День</button>
+                    <button class="ch-tab" data-duration="weekly">Неделя</button>
+                    <button class="ch-tab" data-duration="monthly">Месяц</button>
+                </div>
+                <div class="challenges-list" id="challengesList">
+                    <!-- Challenges will be inserted here -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal for Positions -->
+        <div id="positionsModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>🔥 Позы</h2>
+                    <button class="close-btn" onclick="closeModal('positionsModal')">✕</button>
+                </div>
+                <div class="difficulty-filter">
+                    <button class="diff-btn active" data-diff="all">Все</button>
+                    <button class="diff-btn" data-diff="1">⭐</button>
+                    <button class="diff-btn" data-diff="2">⭐⭐</button>
+                    <button class="diff-btn" data-diff="3">⭐⭐⭐</button>
+                    <button class="diff-btn" data-diff="4">⭐⭐⭐⭐</button>
+                </div>
+                <div class="positions-list" id="positionsList">
+                    <!-- Positions will be inserted here -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal for Learn -->
+        <div id="learnModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>📚 Обучение</h2>
+                    <button class="close-btn" onclick="closeModal('learnModal')">✕</button>
+                </div>
+                <div class="articles-list" id="articlesList">
+                    <!-- Articles will be inserted here -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal for Game Detail -->
+        <div id="gameModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2 id="gameTitle">Игра</h2>
+                    <button class="close-btn" onclick="closeModal('gameModal')">✕</button>
+                </div>
+                <div id="gameContent">
+                    <!-- Game details will be inserted here -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal for Article Detail -->
+        <div id="articleModal" class="modal">
+            <div class="modal-content full">
+                <div class="modal-header">
+                    <h2 id="articleTitle">Статья</h2>
+                    <button class="close-btn" onclick="closeModal('articleModal')">✕</button>
+                </div>
+                <div id="articleContent">
+                    <!-- Article content will be inserted here -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal for Partner Connection -->
+        <div id="partnerModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>🔗 Связь с партнёром</h2>
+                    <button class="close-btn" onclick="closeModal('partnerModal')">✕</button>
+                </div>
+                <div class="partner-content">
+                    <div class="partner-section">
+                        <h3>Ваш код</h3>
+                        <div class="partner-code" id="myPartnerCode">------</div>
+                        <button class="btn-secondary" onclick="copyPartnerCode()">📋 Скопировать</button>
+                        <button class="btn-primary" onclick="sharePartnerCode()">📤 Отправить партнёру</button>
+                    </div>
+                    <div class="partner-divider">или</div>
+                    <div class="partner-section">
+                        <h3>Код партнёра</h3>
+                        <input type="text" id="partnerCodeInput" placeholder="Введите код партнёра" maxlength="6">
+                        <button class="btn-primary" onclick="connectPartner()">🔗 Подключить</button>
+                    </div>
+                    <div id="partnerStatus" class="partner-status-info"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal for Roulette -->
+        <div id="rouletteModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>🎰 Рулетка</h2>
+                    <button class="close-btn" onclick="closeModal('rouletteModal')">✕</button>
+                </div>
+                <div class="roulette-content">
+                    <div class="roulette-type-selector">
+                        <button class="roulette-type active" data-type="ideas">💡 Идеи</button>
+                        <button class="roulette-type" data-type="positions">🔥 Позы</button>
+                        <button class="roulette-type" data-type="questions">❓ Вопросы</button>
+                        <button class="roulette-type" data-type="games">🎮 Игры</button>
+                    </div>
+                    <div class="roulette-wheel-container">
+                        <div class="roulette-wheel" id="rouletteWheel">
+                            <div class="wheel-pointer">▼</div>
+                            <div class="wheel-center">🔥</div>
+                        </div>
+                    </div>
+                    <button class="spin-btn" id="spinBtn" onclick="spinRoulette()">🎲 Крутить!</button>
+                    <div class="roulette-result" id="rouletteResult"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal for Truth or Dare -->
+        <div id="todModal" class="modal">
+            <div class="modal-content full">
+                <div class="modal-header">
+                    <h2>🎯 Правда или Действие</h2>
+                    <button class="close-btn" onclick="closeModal('todModal')">✕</button>
+                </div>
+                <div class="tod-content">
+                    <div class="tod-players">
+                        <div class="tod-player active" id="player1">
+                            <span class="player-avatar">👤</span>
+                            <span class="player-name">Игрок 1</span>
+                        </div>
+                        <div class="tod-vs">VS</div>
+                        <div class="tod-player" id="player2">
+                            <span class="player-avatar">👤</span>
+                            <span class="player-name">Игрок 2</span>
+                        </div>
+                    </div>
+                    <div class="tod-level-selector">
+                        <button class="tod-level active" data-level="mild">🌸 Лайт</button>
+                        <button class="tod-level" data-level="medium">🔥 Средне</button>
+                        <button class="tod-level" data-level="spicy">🌶️ Горячо</button>
+                    </div>
+                    <div class="tod-choice">
+                        <button class="tod-btn truth" onclick="getTruth()">
+                            <span class="tod-icon">🗣️</span>
+                            <span>Правда</span>
+                        </button>
+                        <button class="tod-btn dare" onclick="getDare()">
+                            <span class="tod-icon">⚡</span>
+                            <span>Действие</span>
+                        </button>
+                    </div>
+                    <div class="tod-card" id="todCard">
+                        <div class="tod-card-type" id="todType">Выберите: Правда или Действие</div>
+                        <div class="tod-card-text" id="todText">Нажмите на кнопку выше, чтобы начать игру</div>
+                    </div>
+                    <div class="tod-actions">
+                        <button class="btn-secondary" onclick="skipTod()">⏭️ Пропустить</button>
+                        <button class="btn-primary" onclick="completeTod()">✅ Выполнено</button>
+                    </div>
+                    <div class="tod-score">
+                        <span>Игрок 1: <strong id="score1">0</strong></span>
+                        <span>Игрок 2: <strong id="score2">0</strong></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal for Planner -->
+        <div id="plannerModal" class="modal">
+            <div class="modal-content full">
+                <div class="modal-header">
+                    <h2>📅 Планировщик свиданий</h2>
+                    <button class="close-btn" onclick="closeModal('plannerModal')">✕</button>
+                </div>
+                <div class="planner-content">
+                    <div class="planner-tabs">
+                        <button class="planner-tab active" data-tab="upcoming">📆 Запланировано</button>
+                        <button class="planner-tab" data-tab="history">📜 История</button>
+                    </div>
+                    <div class="planner-add">
+                        <button class="btn-primary full-width" onclick="showAddDate()">➕ Запланировать свидание</button>
+                    </div>
+                    <div class="planner-list" id="plannerList">
+                        <!-- Dates will be inserted here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal for Add Date -->
+        <div id="addDateModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>➕ Новое свидание</h2>
+                    <button class="close-btn" onclick="closeModal('addDateModal')">✕</button>
+                </div>
+                <div class="add-date-content">
+                    <div class="form-group">
+                        <label>📅 Дата</label>
+                        <input type="date" id="dateInput">
+                    </div>
+                    <div class="form-group">
+                        <label>⏰ Время</label>
+                        <input type="time" id="timeInput">
+                    </div>
+                    <div class="form-group">
+                        <label>💡 Идея (опционально)</label>
+                        <select id="ideaSelect">
+                            <option value="">Выберите идею...</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>📝 Заметка</label>
+                        <textarea id="noteInput" placeholder="Детали свидания..."></textarea>
+                    </div>
+                    <button class="btn-primary full-width" onclick="saveDate()">💾 Сохранить</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal for Coupons -->
+        <div id="couponsModal" class="modal">
+            <div class="modal-content full">
+                <div class="modal-header">
+                    <h2>🎁 Купоны желаний</h2>
+                    <button class="close-btn" onclick="closeModal('couponsModal')">✕</button>
+                </div>
+                <div class="coupons-content">
+                    <div class="coupons-tabs">
+                        <button class="coupon-tab active" data-tab="my">🎫 Мои купоны</button>
+                        <button class="coupon-tab" data-tab="received">📬 Полученные</button>
+                        <button class="coupon-tab" data-tab="used">✅ Использованные</button>
+                    </div>
+                    <div class="coupons-add">
+                        <button class="btn-primary full-width" onclick="showCreateCoupon()">✨ Создать купон</button>
+                    </div>
+                    <div class="coupons-list" id="couponsList">
+                        <!-- Coupons will be inserted here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal for Create Coupon -->
+        <div id="createCouponModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>✨ Создать купон</h2>
+                    <button class="close-btn" onclick="closeModal('createCouponModal')">✕</button>
+                </div>
+                <div class="create-coupon-content">
+                    <div class="coupon-templates">
+                        <h3>Выберите шаблон или создайте свой</h3>
+                        <div class="templates-grid" id="couponTemplates">
+                            <!-- Templates will be inserted here -->
+                        </div>
+                    </div>
+                    <div class="coupon-custom">
+                        <div class="form-group">
+                            <label>🎨 Иконка</label>
+                            <div class="icon-selector" id="iconSelector">
+                                <button class="icon-btn active" data-icon="💆">💆</button>
+                                <button class="icon-btn" data-icon="🍽️">🍽️</button>
+                                <button class="icon-btn" data-icon="🎬">🎬</button>
+                                <button class="icon-btn" data-icon="💋">💋</button>
+                                <button class="icon-btn" data-icon="🌹">🌹</button>
+                                <button class="icon-btn" data-icon="🔥">🔥</button>
+                                <button class="icon-btn" data-icon="⭐">⭐</button>
+                                <button class="icon-btn" data-icon="🎁">🎁</button>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>📝 Название купона</label>
+                            <input type="text" id="couponTitle" placeholder="Например: Массаж 30 минут">
+                        </div>
+                        <div class="form-group">
+                            <label>📋 Описание</label>
+                            <textarea id="couponDesc" placeholder="Подробности..."></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label>📅 Срок действия (опционально)</label>
+                            <input type="date" id="couponExpiry">
+                        </div>
+                    </div>
+                    <div class="coupon-preview">
+                        <h3>Предпросмотр</h3>
+                        <div class="coupon-card preview" id="couponPreview">
+                            <div class="coupon-icon">💆</div>
+                            <div class="coupon-info">
+                                <div class="coupon-title">Название купона</div>
+                                <div class="coupon-desc">Описание купона</div>
+                            </div>
+                        </div>
+                    </div>
+                    <button class="btn-primary full-width" onclick="saveCoupon()">🎁 Создать и отправить</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal for Album -->
+        <div id="albumModal" class="modal">
+            <div class="modal-content full">
+                <div class="modal-header">
+                    <h2>📸 Альбом воспоминаний</h2>
+                    <button class="close-btn" onclick="closeModal('albumModal')">✕</button>
+                </div>
+                <div class="album-content">
+                    <div class="album-stats">
+                        <div class="album-stat">
+                            <span class="album-stat-value" id="albumCount">0</span>
+                            <span class="album-stat-label">воспоминаний</span>
+                        </div>
+                        <div class="album-stat">
+                            <span class="album-stat-value" id="albumDays">0</span>
+                            <span class="album-stat-label">дней вместе</span>
+                        </div>
+                    </div>
+                    <div class="album-add">
+                        <button class="btn-primary full-width" onclick="showAddMemory()">📷 Добавить воспоминание</button>
+                    </div>
+                    <div class="album-filter">
+                        <button class="album-filter-btn active" data-filter="all">Все</button>
+                        <button class="album-filter-btn" data-filter="photo">📷 Фото</button>
+                        <button class="album-filter-btn" data-filter="date">💕 Свидания</button>
+                        <button class="album-filter-btn" data-filter="milestone">🏆 Вехи</button>
+                    </div>
+                    <div class="album-timeline" id="albumTimeline">
+                        <!-- Memories will be inserted here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal for Add Memory -->
+        <div id="addMemoryModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>📷 Новое воспоминание</h2>
+                    <button class="close-btn" onclick="closeModal('addMemoryModal')">✕</button>
+                </div>
+                <div class="add-memory-content">
+                    <div class="memory-type-selector">
+                        <button class="memory-type active" data-type="photo">📷 Фото</button>
+                        <button class="memory-type" data-type="date">💕 Свидание</button>
+                        <button class="memory-type" data-type="milestone">🏆 Веха</button>
+                    </div>
+                    <div class="form-group">
+                        <label>📅 Дата</label>
+                        <input type="date" id="memoryDate">
+                    </div>
+                    <div class="form-group">
+                        <label>📝 Название</label>
+                        <input type="text" id="memoryTitle" placeholder="Например: Наш первый поход">
+                    </div>
+                    <div class="form-group">
+                        <label>💭 Описание</label>
+                        <textarea id="memoryDesc" placeholder="Что особенного было в этот день..."></textarea>
+                    </div>
+                    <div class="form-group" id="photoUploadGroup">
+                        <label>🖼️ Фото</label>
+                        <div class="photo-upload" id="photoUpload">
+                            <input type="file" id="memoryPhoto" accept="image/*" onchange="previewPhoto(this)">
+                            <div class="photo-upload-placeholder" id="photoPlaceholder">
+                                <span>📷</span>
+                                <span>Нажмите для загрузки</span>
+                            </div>
+                            <img id="photoPreviewImg" class="photo-preview-img" style="display: none;">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>😊 Настроение</label>
+                        <div class="mood-selector" id="moodSelector">
+                            <button class="mood-btn" data-mood="❤️">❤️</button>
+                            <button class="mood-btn active" data-mood="😍">😍</button>
+                            <button class="mood-btn" data-mood="🥰">🥰</button>
+                            <button class="mood-btn" data-mood="😊">😊</button>
+                            <button class="mood-btn" data-mood="🔥">🔥</button>
+                            <button class="mood-btn" data-mood="✨">✨</button>
+                        </div>
+                    </div>
+                    <button class="btn-primary full-width" onclick="saveMemory()">💾 Сохранить</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal for View Memory -->
+        <div id="viewMemoryModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2 id="viewMemoryTitle">Воспоминание</h2>
+                    <button class="close-btn" onclick="closeModal('viewMemoryModal')">✕</button>
+                </div>
+                <div class="view-memory-content" id="viewMemoryContent">
+                    <!-- Memory details will be inserted here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="data.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
